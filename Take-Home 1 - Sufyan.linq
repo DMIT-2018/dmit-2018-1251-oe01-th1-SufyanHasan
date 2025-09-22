@@ -43,3 +43,24 @@ Programs
     .Where(x => x.RequiredCourseCount >= 22)
     .OrderBy(x => x.Program)
     .Dump();
+	
+// Question 3
+Students
+    .Where(s => s.CountryCode != "CA" 
+        && !StudentPayments.Any(p => p.StudentNumber == s.StudentNumber))
+    .OrderBy(s => s.LastName)
+    .ThenBy(s => s.FirstName)
+    .Select(s => new {
+        StudentNumber = s.StudentNumber,
+        CountryName = Countries
+            .Where(c => c.CountryCode == s.CountryCode)
+            .Select(c => c.CountryName)
+            .FirstOrDefault(),
+        FullName = s.FirstName + " " + s.LastName,
+        ClubMembershipCount = ClubMembers
+            .Count(cm => cm.StudentNumber == s.StudentNumber) == 0
+            ? "None"
+            : ClubMembers
+                .Count(cm => cm.StudentNumber == s.StudentNumber).ToString()
+    })
+    .Dump();
