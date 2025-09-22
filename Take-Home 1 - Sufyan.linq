@@ -64,3 +64,19 @@ Students
                 .Count(cm => cm.StudentNumber == s.StudentNumber).ToString()
     })
     .Dump();
+	
+// Question 4
+Employees
+    .Where(e => e.Position.Description == "Instructor"
+        && e.ReleaseDate == null
+        && e.ClassOfferings.Any())
+    .OrderByDescending(e => e.ClassOfferings.Count)
+    .ThenBy(e => e.LastName)
+    .Select(e => new {
+        Program = e.Program.ProgramName,
+        FullName = e.FirstName + " " + e.LastName,
+        Workload = e.ClassOfferings.Count > 4 ? "High"
+            : e.ClassOfferings.Count > 2 ? "Med"
+            : "Low"
+    })
+    .Dump();
