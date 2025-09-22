@@ -80,3 +80,25 @@ Employees
             : "Low"
     })
     .Dump();
+	
+// Question 5
+Clubs
+    .Select(c => new {
+        Supervisor = c.EmployeeID == null
+            ? "Unknown"
+            : Employees
+                .Where(e => e.EmployeeID == c.EmployeeID)
+                .Select(e => e.FirstName + " " + e.LastName)
+                .FirstOrDefault() ?? "Unknown",
+        Club = c.ClubName,
+        MemberCount = ClubMembers
+            .Count(cm => cm.ClubID == c.ClubID),
+        Activities = ClubActivities
+            .Count(a => a.ClubID == c.ClubID) == 0
+            ? "None Scheduled"
+            : ClubActivities
+                .Count(a => a.ClubID == c.ClubID).ToString()
+    })
+    .OrderByDescending(x => x.MemberCount)
+    .ThenBy(x => x.Club)
+    .Dump();
